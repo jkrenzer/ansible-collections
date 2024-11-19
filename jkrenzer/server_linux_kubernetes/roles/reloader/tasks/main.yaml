@@ -1,0 +1,12 @@
+---
+- name: Add stakater helm repo for reloader
+  kubernetes.core.helm_repository:
+    name: stakater
+    repo_url: "https://stakater.github.io/stakater-charts"
+- name: Deploy the reloader
+  kubernetes.core.helm:
+    chart_ref: "stakater/reloader"
+    create_namespace: true
+    release_name: reloader
+    release_namespace: reloader
+    release_state: present

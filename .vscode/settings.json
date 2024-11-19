@@ -1,0 +1,8 @@
+{
+    "ansible.python.interpreterPath": "/usr/local/bin/python",
+    "ansible.validation.lint.arguments": "--project-dir jkrenzer/",
+    "conventionalCommits.scopes": [
+        "infrastructure",
+        "setup"
+    ]
+}

@@ -1,0 +1,11 @@
+---
+- name: Setup the k3s cluster
+  ansible.builtin.import_playbook: k3s.orchestration.site
+- name: Install helm
+  ansible.builtin.import_playbook: jkrenzer.server_linux_kubernetes.install_helm
+- name: Install certmanager
+  ansible.builtin.import_playbook: jkrenzer.server_linux_kubernetes.install_certmanager
+- name: Install Stakater reloader
+  ansible.builtin.import_playbook: jkrenzer.server_linux_kubernetes.install_reloader
+- name: Install Ingress NGINX
+  ansible.builtin.import_playbook: jkrenzer.server_linux_kubernetes.install_ingress_nginx

@@ -1,0 +1,21 @@
+---
+- name: Update repositories cache and install gpg
+  ansible.builtin.apt:
+    name: gpg
+    update_cache: true
+- name: Add Apt signing key for helm
+  ansible.builtin.get_url:
+    url: https://baltocdn.com/helm/signing.asc
+    dest: "{{  helm_repo_key_dest }}"
+    mode: "0600"
+- name: Get DEB architecture
+  ansible.builtin.command: dpkg --print-architecture
+  register: deb_architecture
+  changed_when: false
+- name: Add helm repository into sources list
+  ansible.builtin.apt_repository:
+    repo: "deb [arch={{ deb_architecture.stdout }} signed-by={{ helm_repo_key_dest }}] https://baltocdn.com/helm/stable/debian/ all main"
+    state: present
+- name: Install helm
+  ansible.builtin.apt:
+    name: helm

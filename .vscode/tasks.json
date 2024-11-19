@@ -1,0 +1,37 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Lint and fix",
+            "type": "shell",
+            "command": "ansible-lint --fix -f full --project-dir ${WORK_DIR}/jkrenzer"
+        },
+        {
+            "label": "Lint",
+            "type": "shell",
+            "command": "ansible-lint -f full --project-dir ${WORK_DIR}/jkrenzer"
+        },
+        {
+            "label": "Install all collections",
+            "type": "shell",
+            "command": "ansible-galaxy collection install ${WORK_DIR}/jkrenzer/*"
+        },
+        {
+            "label": "Run pre-commit on changed files",
+            "type": "shell",
+            "command": "pre-commit run --config .config/pre-commit.yaml"
+        },
+        {
+            "label": "Run pre-commit on all files",
+            "type": "shell",
+            "command": "pre-commit run --all --config .config/pre-commit.yaml"
+        },
+        {
+            "label": "Install/update pre-commit",
+            "type": "shell",
+            "command": "pre-commit install --install-hooks --config .config/pre-commit.yaml"
+        }
+    ]
+}

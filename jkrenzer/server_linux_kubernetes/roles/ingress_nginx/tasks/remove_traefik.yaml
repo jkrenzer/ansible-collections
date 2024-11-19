@@ -1,0 +1,13 @@
+---
+- name: Remove traefik
+  kubernetes.core.helm:
+    release_name: traefik
+    release_namespace: kube-system
+    release_state: absent
+    wait: true
+- name: Remove traefik CRDs
+  kubernetes.core.helm:
+    release_name: traefik-crd
+    release_namespace: kube-system
+    release_state: absent
+    wait: true

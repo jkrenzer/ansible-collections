@@ -1,0 +1,10 @@
+---
+argument_specs:
+  # tasks/main.yml entry point
+  main:
+    short_description: Install Reloader
+    description:
+      - Installs Stakater Reloader in the cluster
+    author:
+      - Jörn Krenzer
+    options: {}

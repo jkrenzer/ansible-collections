@@ -1,0 +1,16 @@
+---
+- name: Upgrade linux systems
+  hosts: linux
+  gather_facts: true
+  become: true
+  become_user: root
+  tasks:
+    - name: Upgrade Linux
+      when: ansible_distribution in ['Ubuntu', 'Debian']
+      block:
+        - name: Upgrade all packages to the latest version
+          ansible.builtin.apt:
+            update_cache: true
+            upgrade: full
+        - name: Reboot the server.
+          ansible.builtin.reboot: {}

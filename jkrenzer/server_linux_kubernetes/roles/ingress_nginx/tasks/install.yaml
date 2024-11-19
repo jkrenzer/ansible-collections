@@ -1,0 +1,15 @@
+---
+- name: Add ingress-nginx repo
+  kubernetes.core.helm_repository:
+    name: ingress-nginx
+    repo_url: https://kubernetes.github.io/ingress-nginx
+- name: Deploy the nginx ingress
+  kubernetes.core.helm:
+    chart_ref: ingress-nginx/ingress-nginx
+    create_namespace: true
+    release_name: ingress-nginx
+    release_namespace: ingress-nginx
+    release_state: present
+    update_repo_cache: true
+    set_values:
+      - value: "controller.extraArgs.enable-ssl-passthrough=1"

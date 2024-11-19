@@ -1,0 +1,47 @@
+---
+- name: Change an image
+  hosts: docker_compose_servers
+  gather_facts: false
+  become: true
+  become_user: root
+  vars:
+    project_dir: "{{ docker_compose_project_dir }}"
+    service: "{{ docker_compose_service }}"
+    image: "{{ docker_compose_image }}"
+    only: "{{ docker_compose_only }}"
+    read_only: "{{ read_only }}"
+  vars_prompt:
+    - name: "service"
+      prompt: "Service to update"
+      private: false
+    - name: "image"
+      prompt: "New image designation"
+      private: false
+    - name: "only"
+      prompt: "Only update RegEx"
+      private: false
+      default: ".*"
+    - name: "read_only"
+      prompt: "Read only? [Y/n]"
+      private: false
+      default: "True"
+  tasks:
+    - name: Get docker-compose.yml
+      ansible.builtin.slurp:
+        src: "{{ docker_compose_project_dir }}/docker-compose.yml"
+      register: docker_compose_yml
+    - name: Interpret remote file content as yaml
+      ansible.builtin.set_fact:
+        docker_compose_yml: "{{ docker_compose_yml.content | b64decode | from_yaml }}"
+    - name: Show result
+      ansible.builtin.debug:
+        var: "docker_compose_yml.services.{{ service }}.image"
+    - name: Modify docker-compose.yml
+      when: docker_compose_yml.services[service].image | regex_search(only) and not (read_only | bool)
+      block:
+        - name: Change
+          git_ogawa.yaml.update_yaml:
+            path: "{{ docker_compose_project_dir }}/docker-compose.yml"
+            update:
+              - key: "services.{{ service }}.image"
+                value: "{{ image }}"

@@ -1,0 +1,5 @@
+---
+- name: Install ingress-nginx
+  ansible.builtin.include_tasks: install.yaml
+- name: Remove Traefik
+  ansible.builtin.include_tasks: remove_traefik.yaml

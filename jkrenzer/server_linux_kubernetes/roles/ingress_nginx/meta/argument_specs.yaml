@@ -1,0 +1,10 @@
+---
+argument_specs:
+  # tasks/main.yml entry point
+  main:
+    short_description: Install ingress-nginx
+    description:
+      - Installs Ingress-Nginx in the cluster
+    author:
+      - Jörn Krenzer
+    options: {}

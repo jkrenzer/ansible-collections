@@ -1,0 +1,35 @@
+---
+- name: Upgrade docker-compose containers
+  hosts: docker_compose_servers
+  become: true
+  become_user: root
+  tasks:
+    - name: Pull the newest images
+      community.docker.docker_compose:
+        project_src: "{{ docker_compose_project_dir }}"
+        pull: true
+        build: true
+      register: output
+    - name: Show results
+      ansible.builtin.debug:
+        var: output
+    - name: Restart services
+      community.docker.docker_compose:
+        project_src: "{{ docker_compose_project_dir }}"
+        build: false
+        restarted: true
+      register: output
+    - name: Show results
+      ansible.builtin.debug:
+        var: output
+    - name: Verify that all services survived the upgrade
+      ansible.builtin.assert:
+        that:
+          - "output.services.mail.{{ docker_compose_project_name }}_mail_1.state.running"
+          - "output.services.nginx.{{ docker_compose_project_name }}_nginx_1.state.running"
+          - "output.services.gitlab.{{ docker_compose_project_name }}_gitlab_1.state.running"
+          - "output.services.hedgedoc.{{ docker_compose_project_name }}_hedgedoc_1.state.running"
+          - "output.services['gitlab-runner']['{{ docker_compose_project_name }}_gitlab-runner_1'].state.running"
+          - "output.services['gitlab-runner-priviledged']['{{ docker_compose_project_name }}_gitlab-runner-priviledged_1'].state.running"
+          - "output.services.keycloak.{{ docker_compose_project_name }}_keycloak_1.state.running"
+          - "output.services.postgresql.{{ docker_compose_project_name }}_postgresql_1.state.running"
