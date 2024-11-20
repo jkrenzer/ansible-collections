@@ -1,5 +1,7 @@
 ---
-- name: Install ingress-nginx
+- name: Install ingress-nginx deployment
   ansible.builtin.include_tasks: install.yaml
-- name: Remove Traefik
-  ansible.builtin.include_tasks: remove_traefik.yaml
+  when: state == "present"
+- name: Remove ingres--nginx deployment
+  ansible.builtin.include_tasks: remove.yaml
+  when: state == "absent"
