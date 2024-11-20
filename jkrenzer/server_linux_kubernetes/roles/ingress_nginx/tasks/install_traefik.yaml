@@ -1,0 +1,13 @@
+---
+- name: Add traefik CRDs
+  kubernetes.core.helm:
+    release_name: traefik-crd
+    release_namespace: kube-system
+    release_state: present
+    wait: true
+- name: Install traefik
+  kubernetes.core.helm:
+    release_name: traefik
+    release_namespace: kube-system
+    release_state: present
+    wait: true
