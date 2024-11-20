@@ -8,6 +8,14 @@ argument_specs:
     author:
       - Jörn Krenzer
     options:
+      state:
+        type: str
+        choices:
+          - present
+          - absent
+        default: present
+        required: true
+        description: "Desired state of the role"
       helm_repo_key_dest:
         type: "str"
         required: true

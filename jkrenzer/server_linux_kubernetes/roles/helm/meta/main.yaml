@@ -1,0 +1,26 @@
+---
+galaxy_info:
+  role_name: helm
+  author: Jörn Krenzer
+  description: Helm install
+  license: "license (GPL3)"
+  min_ansible_version: "2.10"
+  platforms:
+    - name: Fedora
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: AIX
+      versions:
+        - all
+  galaxy_tags:
+    - container
+    - orchestration
+    - kubernetes
+    - helm
+    - packages
