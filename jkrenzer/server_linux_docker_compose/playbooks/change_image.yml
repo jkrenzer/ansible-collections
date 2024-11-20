@@ -1,6 +1,6 @@
 ---
 - name: Change an image
-  hosts: docker_compose_servers
+  hosts: docker_compose:&server
   gather_facts: false
   become: true
   become_user: root
@@ -29,15 +29,15 @@
     - name: Get docker-compose.yml
       ansible.builtin.slurp:
         src: "{{ docker_compose_project_dir }}/docker-compose.yml"
-      register: docker_compose_yml
+      register: docker_compose_yaml
     - name: Interpret remote file content as yaml
       ansible.builtin.set_fact:
-        docker_compose_yml: "{{ docker_compose_yml.content | b64decode | from_yaml }}"
+        docker_compose_yaml: "{{ docker_compose_yaml.content | b64decode | from_yaml }}"
     - name: Show result
       ansible.builtin.debug:
-        var: "docker_compose_yml.services.{{ service }}.image"
+        var: "docker_compose_yaml.services.{{ service }}.image"
     - name: Modify docker-compose.yml
-      when: docker_compose_yml.services[service].image | regex_search(only) and not (read_only | bool)
+      when: docker_compose_yaml.services[service].image | regex_search(only) and not (read_only | bool)
       block:
         - name: Change
           git_ogawa.yaml.update_yaml:

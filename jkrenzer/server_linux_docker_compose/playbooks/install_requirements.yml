@@ -1,6 +1,6 @@
 ---
 - name: Install requirements on the server used by this collection
-  hosts: docker_compose_servers
+  hosts: docker_compose:&server
   become: true
   become_user: root
   tasks:

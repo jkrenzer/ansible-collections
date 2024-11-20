@@ -1,23 +1,15 @@
 ---
 - name: Upgrade docker-compose containers
-  hosts: docker_compose_servers
+  hosts: docker_compose:&server
   become: true
   become_user: root
   tasks:
     - name: Pull the newest images
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         project_src: "{{ docker_compose_project_dir }}"
-        pull: true
-        build: true
-      register: output
-    - name: Show results
-      ansible.builtin.debug:
-        var: output
-    - name: Restart services
-      community.docker.docker_compose:
-        project_src: "{{ docker_compose_project_dir }}"
-        build: false
-        restarted: true
+        pull: missing
+        build: policy
+        state: present
       register: output
     - name: Show results
       ansible.builtin.debug:
