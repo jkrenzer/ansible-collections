@@ -26,7 +26,10 @@ repos:
     rev: v24.10.0
     hooks:
       - id: ansible-lint
-        args: ["--fix"]
+        args: ["--fix", "--offline"]
+        files: ^jkrenzer/ # in case all ansible related files are in this directory
+        exclude_types: [markdown, shell] # to ignore changes in files of this types
+        always_run: false
         additional_dependencies:
           - ansible
   - repo: https://github.com/gitleaks/gitleaks
@@ -37,4 +40,5 @@ repos:
     rev: v0.19.1
     hooks:
       - id: gitlint
-        args: ["--contrib", "contrib-title-conventional-commits", "--msg-filename"]
+        args:
+          ["--contrib", "contrib-title-conventional-commits", "--msg-filename"]
