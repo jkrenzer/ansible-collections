@@ -32,6 +32,27 @@
             "label": "Install/update pre-commit",
             "type": "shell",
             "command": "pre-commit install --install-hooks --config .config/pre-commit.yaml"
-        }
+        },
+        {
+            "label": "Setup up Git",
+            "detail": "Setup git with the minimum working config",
+            "type": "shell",
+            "command": "git config --global user.email \"${input:emailAddress}\" && git config --global user.name \"${input:fullName}\" && git lfs install",
+            "problemMatcher": []
+        },
+    ],
+    "inputs": [
+        {
+            "id": "emailAddress",
+            "type": "promptString",
+            "default": "",
+            "description": "Please enter your email address"
+        },
+        {
+            "id": "fullName",
+            "type": "promptString",
+            "default": "",
+            "description": "Please enter your full name, e.g. 'Jane Doe'"
+        },
     ]
 }
