@@ -1,9 +1,12 @@
 FROM python:3.12-slim as base
+
+ARG EDITOR=nano
 ARG WORK_DIR=/workspaces/ansible-collections
 ARG ANSIBLE_COLLECTIONS_PATH=/root/.ansible/collections/ansible_collections
 ARG COLLECTION_NAMESPACE=jkrenzer
 ARG COLLECTION_DIR=$WORK_DIR/$COLLECTION_NAMESPACE
 
+ENV EDITOR=$EDITOR
 ENV WORK_DIR=$WORK_DIR
 ENV ANSIBLE_COLLECTIONS_PATH=$ANSIBLE_COLLECTIONS_PATH
 ENV DEBIAN_FRONTEND=noninteractive
@@ -19,8 +22,8 @@ FROM base as builder
 RUN apt update && apt install -y --no-install-recommends -y \
   build-essential \
   locales \
-  git \
   git-lfs \
+  nano \
   libkrb5-dev \
   && rm -rf /var/lib/apt/lists/*
 RUN pip3 install poetry

@@ -3,6 +3,16 @@
     "ansible.validation.lint.arguments": "--project-dir jkrenzer/",
     "conventionalCommits.scopes": [
         "infrastructure",
-        "setup"
+        "setup",
+        "playbooks",
+        "roles"
+    ],
+    "git.commandsToLog": [
+        "commit",
+        "push",
+        "pre-commit",
+        "add",
+        "status",
+        "checkout",
     ]
 }

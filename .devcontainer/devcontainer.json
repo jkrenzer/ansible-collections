@@ -17,9 +17,13 @@
 			"extensions": [
 				"redhat.ansible",
 				"vivaxy.vscode-conventional-commits",
-				"ms-azuretools.vscode-docker"
+				"ms-azuretools.vscode-docker",
+				"GitHub.copilot"
 			]
 		}
+	},
+	"containerEnv": {
+		"EDITOR": "code -w",
 	},
 	"postCreateCommand": "pre-commit install --config .config/pre-commit.yaml --install-hooks"
 	// Features to add to the dev container. More info: https://containers.dev/features.
