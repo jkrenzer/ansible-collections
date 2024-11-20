@@ -8,8 +8,61 @@ argument_specs:
     author:
       - Jörn Krenzer
     options:
-      helm_repo_key_dest:
-        type: "str"
+      state:
+        type: str
+        choices:
+          - present
+          - absent
+        default: present
         required: true
-        default: /usr/share/keyrings/helm_signing.asc
-        description: "Destination for the signing keys of helm"
+        description: "Desired state of the role"
+      version:
+        type: str
+        required: true
+        default: v1.5.3
+        description: "Version of the app to install"
+      helm:
+        type: dict
+        options:
+          chart_ref:
+            type: str
+            required: true
+            default: jetstack/cert-manager
+            description: "Reference name of the helm chart"
+          create_namespace:
+            type: bool
+            required: true
+            default: true
+            description: "Create the namespace if it does not exist"
+          release_name:
+            type: str
+            required: true
+            default: cert-manager
+            description: "Name of the helm release"
+          release_namespace:
+            type: str
+            required: true
+            default: cert-manager
+            description: "Namespace of the helm release"
+          repo_name:
+            type: str
+            required: true
+            default: jetstack
+            description: "Name of the helm repository"
+          repo_url:
+            type: str
+            required: true
+            default: https://charts.jetstack.io
+            description: "Helm repository to use"
+          repo_key_dest:
+            type: "str"
+            required: true
+            default: /usr/share/keyrings/helm_signing.asc
+            description: "Destination for the signing keys of helm"
+          values:
+            type: list
+            elements: dict
+            description: "Values to set in the helm chart"
+            default:
+              crds:
+                enabled: true
