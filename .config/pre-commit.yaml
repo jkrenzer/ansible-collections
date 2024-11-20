@@ -29,6 +29,7 @@ repos:
         args: ["--fix", "--offline"]
         files: ^jkrenzer/ # in case all ansible related files are in this directory
         exclude_types: [markdown, shell] # to ignore changes in files of this types
+        pass_filenames: true
         always_run: false
         additional_dependencies:
           - ansible
