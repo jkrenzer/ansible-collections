@@ -1,3 +1,4 @@
+---
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 default_install_hook_types:
@@ -25,6 +26,7 @@ repos:
     rev: v24.10.0
     hooks:
       - id: ansible-lint
+        args: ["--fix"]
         additional_dependencies:
           - ansible
   - repo: https://github.com/gitleaks/gitleaks
@@ -35,9 +37,4 @@ repos:
     rev: v0.19.1
     hooks:
       - id: gitlint
-        args:
-          [
-            "--contrib",
-            "contrib-title-conventional-commits,CC1",
-            "--msg-filename",
-          ]
+        args: ["--contrib", "contrib-title-conventional-commits", "--msg-filename"]
