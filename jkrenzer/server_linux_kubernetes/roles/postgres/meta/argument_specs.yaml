@@ -1,0 +1,68 @@
+---
+argument_specs:
+  # tasks/main.yml entry point
+  main:
+    short_description: Install Postgresql
+    description:
+      - Installs a Postgresql database on a Kubernetes cluster
+    author:
+      - Jörn Krenzer
+    options:
+      state:
+        type: str
+        choices:
+          - present
+          - absent
+        default: present
+        required: true
+        description: "Desired state of the role"
+      version:
+        type: str
+        required: true
+        default: v13.3.0
+        description: "Version of the app to install"
+      helm:
+        type: dict
+        options:
+          chart_ref:
+            type: str
+            required: true
+            default: bitnami/postgresql
+            description: "Reference name of the helm chart"
+          create_namespace:
+            type: bool
+            required: true
+            default: true
+            description: "Create the namespace if it does not exist"
+          release_name:
+            type: str
+            required: true
+            default: postgresql
+            description: "Name of the helm release"
+          release_namespace:
+            type: str
+            required: true
+            default: database
+            description: "Namespace of the helm release"
+          repo_name:
+            type: str
+            required: true
+            default: bitnami
+            description: "Name of the helm repository"
+          repo_url:
+            type: str
+            required: true
+            default: https://charts.bitnami.com/bitnami
+            description: "Helm repository to use"
+          repo_key_dest:
+            type: str
+            required: true
+            default: /usr/share/keyrings/helm_signing.asc
+            description: "Destination for the signing keys of helm"
+          values:
+            type: list
+            elements: dict
+            description: "Values to set in the helm chart"
+            default:
+              postgresql:
+                postgresqlPassword: mypassword
