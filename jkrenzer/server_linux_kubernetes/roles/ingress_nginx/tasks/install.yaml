@@ -1,0 +1,19 @@
+---
+- name: Add ingress-nginx repo
+  kubernetes.core.helm_repository:
+    name: "{{ helm.repo_name }}"
+    repo_url: "{{ helm.repo_url }}"
+    repo_state: present
+
+- name: Deploy the nginx ingress
+  kubernetes.core.helm:
+    chart_ref: "{{ helm.chart_ref }}"
+    create_namespace: "{{ helm.create_namespace }}"
+    release_name: "{{ helm.release_name }}"
+    release_namespace: "{{ helm.release_namespace }}"
+    release_state: present
+    update_repo_cache: true
+    release_values: "{{ helm.values }}"
+
+- name: Get rid of traefik
+  ansible.builtin.include_tasks: remove_traefik.yaml

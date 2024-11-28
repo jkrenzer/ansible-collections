@@ -1,0 +1,7 @@
+---
+- name: Install reloader deployment
+  ansible.builtin.include_tasks: install.yaml
+  when: state == "present"
+- name: Remove reloader deployment
+  ansible.builtin.include_tasks: remove.yaml
+  when: state == "absent"

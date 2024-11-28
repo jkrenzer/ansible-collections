@@ -1,0 +1,5 @@
+---
+collections:
+  - source: https://github.com/kwoodson/ansible-role-yedit
+  - name: community.docker.docker_compose
+  - name: git_ogawa.yaml

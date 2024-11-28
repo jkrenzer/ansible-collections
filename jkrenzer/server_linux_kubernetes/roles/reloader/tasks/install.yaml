@@ -1,0 +1,18 @@
+---
+- name: Add stakater repo
+  kubernetes.core.helm_repository:
+    name: "{{ helm.repo_name }}"
+    repo_url: "{{ helm.repo_url }}"
+    repo_state: present
+
+- name: Deploy the reloader
+  kubernetes.core.helm:
+    chart_ref: "{{ helm.chart_ref }}"
+    create_namespace: "{{ helm.create_namespace }}"
+    release_name: "{{ helm.release_name }}"
+    release_namespace: "{{ helm.release_namespace }}"
+    release_state: present
+    update_repo_cache: true
+    set_values: "{{ helm.set_values }}"
+    chart_version: "{{ version }}"
+    release_values: "{{ helm.values }}"

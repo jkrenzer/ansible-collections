@@ -1,0 +1,7 @@
+---
+- name: Install postgres deployment
+  ansible.builtin.include_tasks: install.yaml
+  when: state == "present"
+- name: Remove postgres deployment
+  ansible.builtin.include_tasks: remove.yaml
+  when: state == "absent"

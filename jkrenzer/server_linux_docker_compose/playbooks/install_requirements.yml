@@ -1,0 +1,17 @@
+---
+- name: Install requirements on the server used by this collection
+  hosts: docker_compose:&server
+  become: true
+  become_user: root
+  tasks:
+    - name: Add needed APT packages
+      ansible.builtin.apt:
+        name:
+          - python3
+          - python3-pip
+          - docker-compose < 2.0
+    - name: Install needed pip packages
+      ansible.builtin.pip:
+        name:
+          - ruamel.yaml >= 0.17.21
+          - jmespath >= 1.0.1

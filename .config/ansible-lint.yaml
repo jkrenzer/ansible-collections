@@ -1,0 +1,5 @@
+---
+kinds:
+  - role: jkrenzer/*/roles/*/
+  - playbook: jkrenzer/*/playbooks/*.yaml
+  - collection: jkrenzer/*/

@@ -1,0 +1,7 @@
+---
+- name: Install Helm
+  when: state == "present"
+  ansible.builtin.include_tasks: install.yaml
+- name: Remove Helm
+  when: state == "absent"
+  ansible.builtin.include_tasks: remove.yaml

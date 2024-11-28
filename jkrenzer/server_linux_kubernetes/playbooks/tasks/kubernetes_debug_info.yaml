@@ -1,0 +1,4 @@
+---
+- name: Provide Kubernetes debug information
+  ansible.builtin.debug:
+    msg: "Accessing API at {{ api_endpoint }}"

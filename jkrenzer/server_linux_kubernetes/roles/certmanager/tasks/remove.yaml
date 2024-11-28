@@ -1,0 +1,14 @@
+---
+- name: Remove cert-manager deployment
+  kubernetes.core.helm:
+    chart_ref: "{{ helm.chart_ref }}"
+    create_namespace: true
+    release_name: "{{ helm.release_name }}"
+    release_namespace: "{{ helm.release_namespace }}"
+    release_state: absent
+    set_values: "{{ helm.set_values }}"
+- name: Remove jetstack helm repo for cert-manager
+  kubernetes.core.helm_repository:
+    name: jetstack
+    repo_url: "{{ helm.repo_url }}"
+    repo_state: absent

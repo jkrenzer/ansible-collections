@@ -1,0 +1,44 @@
+---
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+default_install_hook_types:
+  # Default hook types to install
+  - pre-commit
+  - commit-msg
+  - pre-push
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-illegal-windows-names
+      - id: check-executables-have-shebangs
+      - id: check-toml
+      - id: no-commit-to-branch
+  - repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+      - id: black
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v24.10.0
+    hooks:
+      - id: ansible-lint
+        args: ["--fix", "--offline"]
+        files: ^jkrenzer/ # in case all ansible related files are in this directory
+        exclude_types: [markdown, shell] # to ignore changes in files of this types
+        pass_filenames: true
+        always_run: false
+        additional_dependencies:
+          - ansible
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.19.1
+    hooks:
+      - id: gitlint
+        args: ["--contrib", "contrib-title-conventional-commits", "--msg-filename"]

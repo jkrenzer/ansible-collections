@@ -1,0 +1,23 @@
+---
+argument_specs:
+  # tasks/main.yml entry point
+  main:
+    short_description: Install helm
+    description:
+      - Installs helm
+    author:
+      - Jörn Krenzer
+    options:
+      state:
+        type: str
+        choices:
+          - present
+          - absent
+        default: present
+        required: true
+        description: "Desired state of the role"
+      helm_repo_key_dest:
+        type: "str"
+        required: true
+        default: /usr/share/keyrings/helm_signing.asc
+        description: "Destination for the signing keys of helm"
