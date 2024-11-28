@@ -41,5 +41,4 @@ repos:
     rev: v0.19.1
     hooks:
       - id: gitlint
-        args:
-          ["--contrib", "contrib-title-conventional-commits", "--msg-filename"]
+        args: ["--contrib", "contrib-title-conventional-commits", "--msg-filename"]
