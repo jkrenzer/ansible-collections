@@ -14,11 +14,9 @@ argument_specs:
           - present
           - absent
         default: present
-        required: true
         description: "Desired state of the role"
       version:
         type: str
-        required: true
         default: v13.3.0
         description: "Version of the app to install"
       helm:
@@ -26,37 +24,30 @@ argument_specs:
         options:
           chart_ref:
             type: str
-            required: true
             default: jkrenzer/mailserver
             description: "Reference name of the helm chart"
           create_namespace:
             type: bool
-            required: true
             default: true
             description: "Create the namespace if it does not exist"
           release_name:
             type: str
-            required: true
             default: mailserver
             description: "Name of the helm release"
           release_namespace:
             type: str
-            required: true
-            default: database
+            default: mailserver
             description: "Namespace of the helm release"
           repo_name:
             type: str
-            required: true
             default: jkrenzer
             description: "Name of the helm repository"
           repo_url:
             type: str
-            required: true
             default: https://github.com/jkrenzer/helm-charts
             description: "Helm repository to use"
           repo_key_dest:
             type: str
-            required: true
             default: /usr/share/keyrings/helm_signing.asc
             description: "Destination for the signing keys of helm"
           values:

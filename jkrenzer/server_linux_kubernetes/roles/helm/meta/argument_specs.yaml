@@ -14,10 +14,8 @@ argument_specs:
           - present
           - absent
         default: present
-        required: true
         description: "Desired state of the role"
       helm_repo_key_dest:
         type: "str"
-        required: true
         default: /usr/share/keyrings/helm_signing.asc
         description: "Destination for the signing keys of helm"
