@@ -51,6 +51,5 @@ argument_specs:
             default: /usr/share/keyrings/helm_signing.asc
             description: "Destination for the signing keys of helm"
           values:
-            type: list
-            elements: dict
+            type: dict
             description: "Values to set in the helm chart"
