@@ -14,10 +14,28 @@ argument_specs:
               - absent
             default: present
             description: Desired state of the role
+          helm_repo:
+            type: str
+            default: https://packages.buildkite.com/helm-linux/helm-debian/any
+            description: Helm apt repository URL
           helm_repo_key_dest:
             type: str
-            default: /usr/share/keyrings/helm_signing.asc
+            default: /usr/share/keyrings/helm_signing.gpg
             description: Destination for the signing keys of helm
+          helm_repo_components:
+            type: list
+            elements: str
+            default:
+              - main
+            description: Release component for the helm apt repository
+          helm_repo_suites:
+            type: str
+            default: any
+            description: Suite for the helm apt repository
+          helm_repo_signing_key_url:
+            type: str
+            default: https://packages.buildkite.com/helm-linux/helm-debian/gpgkey
+            description: URL for the signing key of the helm apt repository
       helm_config:
         description: Configuration for helm (overrides defaults)
         type: dict

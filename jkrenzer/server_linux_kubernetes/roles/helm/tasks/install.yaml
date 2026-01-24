@@ -3,19 +3,31 @@
   ansible.builtin.apt:
     name: gpg
     update_cache: true
-- name: Add Apt signing key for helm
-  ansible.builtin.get_url:
-    url: https://baltocdn.com/helm/signing.asc
-    dest: "{{  helm_config.helm_repo_key_dest }}"
-    mode: "0600"
+# - name: Add Apt signing key for helm
+#   ansible.builtin.get_url:
+#     url: "{{ helm_config.helm_repo_signing_key_url }}"
+#     dest: "{{  helm_config.helm_repo_key_dest }}"
+#     mode: "0644"
+#     force: true
 - name: Get DEB architecture
   ansible.builtin.command: dpkg --print-architecture
   register: deb_architecture
   changed_when: false
-- name: Add helm repository into sources list
-  ansible.builtin.apt_repository:
-    repo: "deb [arch={{ deb_architecture.stdout }} signed-by={{ helm_config.helm_repo_key_dest }}] https://baltocdn.com/helm/stable/debian/ all main"
+# - name: Add helm  repository into sources list
+#   ansible.builtin.apt_repository:
+#     repo: "deb [arch={{ deb_architecture.stdout }} signed-by={{ helm_config.helm_repo_key_dest }}] {{ helm_config.helm_repo }} {{ helm_config.helm_repo_path }} {{ helm_config.helm_repo_release }}"
+#     state: present
+- name: Add helm deb822 repository
+  ansible.builtin.deb822_repository:
+    name: helm
+    types: deb
+    uris: "{{ helm_config.helm_repo }}"
+    architectures: "{{ deb_architecture.stdout }}"
+    suites: "{{ helm_config.helm_repo_suites }}"
+    components: "{{ helm_config.helm_repo_components | list }}"
+    signed_by: "{{ helm_config.helm_repo_signing_key_url }}"
     state: present
 - name: Install helm
   ansible.builtin.apt:
+    update_cache: true
     name: helm

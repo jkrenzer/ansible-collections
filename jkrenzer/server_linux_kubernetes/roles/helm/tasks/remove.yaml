@@ -3,9 +3,14 @@
   ansible.builtin.apt:
     name: helm
     state: absent
-- name: Remove helm repository from sources list
-  ansible.builtin.apt_repository:
-    repo: "deb [arch={{ deb_architecture.stdout }} signed-by={{ helm_config.helm_repo_key_dest }}] https://baltocdn.com/helm/stable/debian/ all main"
+# - name: Remove helm repository from sources list
+#   ansible.builtin.apt_repository:
+#     repo: "deb [arch={{ deb_architecture.stdout }} signed-by={{ helm_config.helm_repo_key_dest }}] {{ helm_config.helm_repo }} all main"
+#     state: absent
+- name: Remove helm deb822 repository
+  ansible.builtin.deb822_repository:
+    name: helm
+    types: deb
     state: absent
 # Not sure yet how to remove these
 #

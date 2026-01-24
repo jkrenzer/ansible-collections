@@ -2,5 +2,10 @@
 # Namespaced defaults for helm
 helm_config_defaults: &config
   state: present
-  helm_repo_key_dest: /usr/share/keyrings/helm_signing.asc
+  helm_repo: https://packages.buildkite.com/helm-linux/helm-debian/any
+  helm_repo_key_dest: /usr/share/keyrings/helm_signing.gpg
+  helm_repo_signing_key_url: https://packages.buildkite.com/helm-linux/helm-debian/gpgkey
+  helm_repo_components:
+    - main
+  helm_repo_suites: any
 helm_config: *config
