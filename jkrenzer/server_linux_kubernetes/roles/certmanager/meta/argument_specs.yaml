@@ -3,8 +3,8 @@ argument_specs:
   main:
     short_description: Argument spec for certmanager role
     options:
-      certmanager_config_defaults:
-        description: Default configuration for certmanager Helm chart
+      certmanager_config:
+        description: Configuration for certmanager Helm chart
         type: dict
         options:
           state:
@@ -18,33 +18,63 @@ argument_specs:
             type: str
             default: v1.5.3
             description: Version of the app to install
+          acme:
+            type: dict
+            description: ACME configuration for Let's Encrypt
+            options:
+              email:
+                type: str
+                description: Email address for ACME registration
+                required: true
+              server:
+                type: str
+                default: https://acme-v02.api.letsencrypt.org/directory
+                description: ACME server URL
+              ingress_class:
+                type: str
+                description: Ingress class to use for ACME challenges
           helm:
             type: dict
+            description: Helm chart configuration
             options:
-              chart_ref:
-                type: str
-                default: jetstack/cert-manager
-                description: Reference name of the helm chart
-              create_namespace:
-                type: bool
-                default: true
-                description: Create the namespace if it does not exist
-              release_name:
-                type: str
-                default: cert-manager
-                description: Name of the helm release
-              release_namespace:
-                type: str
-                default: cert-manager
-                description: Namespace of the helm release
-              repo_name:
-                type: str
-                default: jetstack
-                description: Name of the helm repository
-              repo_url:
-                type: str
-                default: https://charts.jetstack.io
-                description: Helm repository to use
+              chart:
+                type: dict
+                description: Helm chart details
+                options:
+                  ref:
+                    type: str
+                    default: jetstack/cert-manager
+                    description: Reference name of the helm chart
+                  version:
+                    type: str
+                    default: v1.5.3
+                    description: Version of the helm chart
+                  release_name:
+                    type: str
+                    default: cert-manager
+                    description: Name of the helm release
+                  release_namespace:
+                    type: str
+                    default: cert-manager
+                    description: Namespace of the helm release
+                  create_namespace:
+                    type: bool
+                    default: true
+                    description: Create the namespace if it does not exist
+              repos:
+                type: list
+                description: List of helm repositories
+                elements: dict
+                default:
+                  - name: jetstack
+                    url: https://charts.jetstack.io
+                options:
+                  name:
+                    type: str
+                    description: Name of the helm repository
+                  url:
+                    type: str
+                    description: URL of the helm repository
               repo_key_dest:
                 type: str
                 default: /usr/share/keyrings/helm_signing.asc
@@ -55,7 +85,3 @@ argument_specs:
                 default:
                   crds:
                     enabled: true
-      certmanager_config:
-        description: Configuration for certmanager Helm chart (overrides defaults)
-        type: dict
-        default: "{{ certmanager_config_defaults }}"

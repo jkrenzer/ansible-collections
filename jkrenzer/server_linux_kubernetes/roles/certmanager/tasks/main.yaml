@@ -1,4 +1,6 @@
 ---
+- name: Merge configuration with defaults
+  ansible.builtin.include_tasks: pre_tasks.yaml
 - name: Install cert-manager deployment
   ansible.builtin.include_tasks: install.yaml
   when: certmanager_config.state == "present"

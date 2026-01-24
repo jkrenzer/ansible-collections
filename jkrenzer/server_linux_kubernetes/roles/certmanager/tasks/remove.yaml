@@ -1,4 +1,9 @@
 ---
+- name: Remove Let's Encrypt ClusterIssuer
+  kubernetes.core.k8s:
+    state: absent
+    kind: ClusterIssuer
+    name: letsencrypt-cluster-issuer
 - name: Remove cert-manager deployment
   kubernetes.core.helm:
     chart_ref: "{{ certmanager_config.helm.chart_ref }}"

@@ -1,14 +1,33 @@
 ---
-- name: Add jetstack helm repo for cert-manager
+- name: Add helm repo for cert-manager
   kubernetes.core.helm_repository:
-    name: "{{ certmanager_config.helm.repo_name }}"
-    repo_url: "{{ certmanager_config.helm.repo_url }}"
     repo_state: present
+    name: "{{ item.name }}"
+    repo_url: "{{ item.url }}"
+    kubeconfig: "{{ kubeconfig | default(omit) }}"
+  loop: "{{ certmanager_config.helm.repos }}"
+- name: Debug certmanager_config
+  ansible.builtin.debug:
+    var: certmanager_config
 - name: Install cert-manager deployment
   kubernetes.core.helm:
-    chart_ref: "{{ certmanager_config.helm.chart_ref }}"
+    chart_ref: "{{ certmanager_config.helm.chart.ref }}"
+    chart_version: "{{ certmanager_config.helm.chart.version }}"
     create_namespace: true
-    release_name: "{{ certmanager_config.helm.release_name }}"
-    release_namespace: "{{ certmanager_config.helm.release_namespace }}"
+    release_name: "{{ certmanager_config.helm.chart.release_name }}"
+    release_namespace: "{{ certmanager_config.helm.chart.release_namespace }}"
     release_state: present
-    release_values: "{{ certmanager_config.helm.values | default(omit) }}"
+    release_values: >
+      {{ certmanager_config.helm['values'] }}
+    kubeconfig: "{{ kubeconfig | default(omit) }}"
+    timeout: 10m0s
+    force: true
+- name: Update repositories cache and install python3-kubernetes
+  ansible.builtin.apt:
+    name: python3-kubernetes
+    update_cache: true
+- name: Create Let's Encrypt ClusterIssuer
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'letsencrypt_cluster_issuer.yaml.j2') }}"
+    kubeconfig: "{{ kubeconfig | default(omit) }}"

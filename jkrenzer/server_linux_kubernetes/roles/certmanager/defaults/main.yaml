@@ -1,11 +1,15 @@
 
 certmanager_config_defaults: &config
   state: present
-  version: v1.5.3
+  version: v1.19.2
+  acme:
+    email: null
+    server: https://acme-v02.api.letsencrypt.org/directory
+    ingress_class: null
   helm:
     chart:
       ref: jetstack/cert-manager
-      version: v1.5.3
+      version: v1.19.2
       release_name: cert-manager
       release_namespace: cert-manager
       create_namespace: true
