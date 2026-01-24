@@ -1,17 +1,17 @@
 ---
 - name: Remove the nginx ingress
   kubernetes.core.helm:
-    chart_ref: "{{ helm.chart_ref }}"
-    create_namespace: "{{ helm.create_namespace }}"
-    release_name: "{{ helm.release_name }}"
-    release_namespace: "{{ helm.release_namespace }}"
+    chart_ref: "{{ ingress_nginx_config.helm.chart_ref }}"
+    create_namespace: "{{ ingress_nginx_config.helm.create_namespace }}"
+    release_name: "{{ ingress_nginx_config.helm.release_name }}"
+    release_namespace: "{{ ingress_nginx_config.helm.release_namespace }}"
     release_state: absent
     update_repo_cache: true
 
 - name: Remove ingress-nginx repo
   kubernetes.core.helm_repository:
-    name: "{{ helm.repo_name }}"
-    repo_url: "{{ helm.repo_url }}"
+    name: "{{ ingress_nginx_config.helm.repo_name }}"
+    repo_url: "{{ ingress_nginx_config.helm.repo_url }}"
     repo_state: absent
 
 - name: Install traefik

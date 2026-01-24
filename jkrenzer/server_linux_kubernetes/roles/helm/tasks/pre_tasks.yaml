@@ -1,0 +1,3 @@
+- name: Merge defaults into config
+  ansible.builtin.set_fact:
+    helm_config: "{{ helm_config_defaults | combine(helm_config, recursive=True) }}"

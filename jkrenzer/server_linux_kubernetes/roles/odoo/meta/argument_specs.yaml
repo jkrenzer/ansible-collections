@@ -1,0 +1,55 @@
+---
+argument_specs:
+  main:
+    short_description: Argument spec for odoo role
+    options:
+      odoo_config_defaults:
+        description: Default configuration for odoo Helm chart
+        type: dict
+        options:
+          state:
+            type: str
+            choices:
+              - present
+              - absent
+            default: present
+            description: Desired state of the role
+          version:
+            type: str
+            default: '19'
+            description: Version of the app to install
+          helm:
+            type: dict
+            options:
+              chart_ref:
+                type: str
+                default: jkrenzer/odoo
+                description: Reference name of the helm chart
+              create_namespace:
+                type: bool
+                default: true
+                description: Create the namespace if it does not exist
+              release_name:
+                type: str
+                default: odoo
+                description: Name of the helm release
+              release_namespace:
+                type: str
+                default: odoo
+                description: Namespace of the helm release
+              repo_name:
+                type: str
+                default: jkrenzer
+                description: Name of the helm repository
+              repo_url:
+                type: str
+                default: https://github.com/jkrenzer/helm-charts
+                description: Helm repository to use
+              repo_key_dest:
+                type: str
+                default: /usr/share/keyrings/helm_signing.asc
+                description: Destination for the signing keys of helm
+      openldap_config:
+        description: Configuration for odoo Helm chart (overrides defaults)
+        type: dict
+        default: "{{ openldap_config_defaults }}"

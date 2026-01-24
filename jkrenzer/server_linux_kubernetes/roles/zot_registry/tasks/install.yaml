@@ -1,0 +1,31 @@
+- name: "Zot Registry | Ensure namespace"
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata: { name: "{{ namespace }}" }
+  vars:
+    namespace: "{{ zot_registry_config.namespace }}"
+
+- name: "Zot Registry | Add Helm repos"
+  kubernetes.core.helm_repository:
+    name: "{{ item.name }}"
+    repo_url: "{{ item.url }}"
+  loop: "{{ helm_repos }}"
+  vars:
+    helm_repos: "{{ zot_registry_config.helm_repos }}"
+
+- name: "Zot Registry | Install/Upgrade operator"
+  kubernetes.core.helm:
+    name: "kubeblocks"
+    chart_ref: "{{ chart_ref }}"
+    chart_version: "{{ chart_version }}"
+    release_namespace: "{{ namespace }}"
+    create_namespace: false
+    wait: true
+  vars:
+    chart_version: "{{ zot_registry_config.chart_version }}"
+    chart_ref: "{{ zot_registry_config.chart_ref }}"
+    name: "{{ zot_registry_config.name }}"
+    namespace: "{{ zot_registry_config.namespace }}"

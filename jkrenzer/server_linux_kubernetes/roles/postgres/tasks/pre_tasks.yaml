@@ -1,0 +1,3 @@
+- name: Merge defaults into config
+  ansible.builtin.set_fact:
+    postgres_config: "{{ postgres_config_defaults | combine(postgres_config, recursive=True) }}"

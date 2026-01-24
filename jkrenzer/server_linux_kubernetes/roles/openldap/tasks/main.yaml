@@ -1,7 +1,7 @@
 ---
-- name: Install postgres deployment
+- name: Install openldap deployment
   ansible.builtin.include_tasks: install.yaml
-  when: state == "present"
-- name: Remove postgres deployment
+  when: openldap_config.state == "present"
+- name: Remove openldap deployment
   ansible.builtin.include_tasks: remove.yaml
-  when: state == "absent"
+  when: openldap_config.state == "absent"

@@ -1,0 +1,14 @@
+# Argument spec for kubeblocks role, following namespaced config pattern
+argument_specs:
+  main:
+    short_description: "Install/manage KubeBlocks, addons, clusters, and logical DBs."
+    options:
+      kubeblocks_config_defaults:
+        type: dict
+        description: "Default configuration for KubeBlocks role."
+        required: true
+      kubeblocks_config:
+        type: dict
+        description: "User-supplied configuration for KubeBlocks role."
+        required: false
+        default: "{{ kubeblocks_config_defaults }}"

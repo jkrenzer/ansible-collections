@@ -1,0 +1,11 @@
+galaxy_info:
+  role_name: kubeblocks
+  author: you
+  description: Install/manage KubeBlocks on k3s; enable addons; create Postgres clusters and logical DBs.
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: linux
+      versions: [ all ]
+  galaxy_tags: [ kubernetes, kubeblocks, k3s, postgres, database ]
+dependencies: []

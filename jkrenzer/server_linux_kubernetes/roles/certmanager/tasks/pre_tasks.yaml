@@ -1,0 +1,3 @@
+- name: Merge defaults into config
+  ansible.builtin.set_fact:
+    certmanager_config: "{{ certmanager_config_defaults | combine(certmanager_config, recursive=True) }}"

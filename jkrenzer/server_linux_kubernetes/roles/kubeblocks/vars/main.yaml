@@ -1,0 +1,10 @@
+# Name helpers derived from KubeBlocks Postgres addon conventions.
+kb_clusters_default_admin_secret: >-
+  {%- macro kb_clusters_default_admin_secret(name) -%}
+  {{ name }}-postgresql-account-postgres
+  {%- endmacro -%}
+
+kb_clusters_default_service: >-
+  {%- macro kb_clusters_default_service(name, ns) -%}
+  {{ name }}-postgresql-postgresql.{{ ns }}.svc.cluster.local
+  {%- endmacro -%}

@@ -1,0 +1,7 @@
+---
+- name: Install openldap deployment
+  ansible.builtin.include_tasks: install.yaml
+  when: odoo_config.state == "present"
+- name: Remove openldap deployment
+  ansible.builtin.include_tasks: remove.yaml
+  when: odoo_config.state == "absent"

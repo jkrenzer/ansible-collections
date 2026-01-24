@@ -1,0 +1,48 @@
+
+- name: "KubeBlocks | Ensure namespace"
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata: { name: "{{ kubeblocks_config.namespace }}" }
+
+
+- name: "KubeBlocks | Install CRDs"
+  when: kubeblocks_config.install_crds
+  kubernetes.core.k8s:
+    state: present
+    src: "https://github.com/apecloud/kubeblocks/releases/download/{{ kubeblocks_config.version }}/kubeblocks_crds.yaml"
+
+
+- name: "KubeBlocks | Add Helm repos"
+  kubernetes.core.helm_repository:
+    name: "{{ item.name }}"
+    repo_url: "{{ item.url }}"
+  loop: "{{ kubeblocks_config.helm_repos }}"
+
+
+- name: "KubeBlocks | Install/Upgrade operator"
+  kubernetes.core.helm:
+    name: "kubeblocks"
+    chart_ref: "kubeblocks/kubeblocks"
+    chart_version: "{{ kubeblocks_config.chart_version }}"
+    release_namespace: "{{ kubeblocks_config.namespace }}"
+    create_namespace: false
+    wait: true
+
+
+- name: "KubeBlocks | (Optional) snapshot-controller"
+  when: kubeblocks_config.install_snapshot_controller
+  kubernetes.core.helm:
+    name: "{{ kubeblocks_config.snapshot_controller_release }}"
+    chart_ref: "{{ kubeblocks_config.snapshot_controller_chart_ref }}"
+    chart_version: "{{ kubeblocks_config.snapshot_controller_chart_version }}"
+    release_namespace: "{{ kubeblocks_config.snapshot_controller_namespace }}"
+    create_namespace: false
+    wait: true
+
+
+- name: "KubeBlocks | Optional MinIO install + BackupRepo"
+  when: kubeblocks_config.minio.install
+  ansible.builtin.include_tasks: "minio.yml"

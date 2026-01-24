@@ -1,0 +1,54 @@
+
+- name: "KubeBlocks | Ensure cluster namespaces"
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata: { name: "{{ item.namespace }}" }
+  loop: "{{ kubeblocks_config.clusters }}"
+  loop_control: { label: "{{ item.namespace }}" }
+
+
+- name: "KubeBlocks | Apply Cluster CRs"
+  kubernetes.core.k8s:
+    state: present
+    definition: >-
+      {{
+        {
+          "apiVersion": "apps.kubeblocks.io/v1",
+          "kind": "Cluster",
+          "metadata": {
+            "name": item.name,
+            "namespace": item.namespace
+          },
+          "spec": {
+            "terminationPolicy": item.termination_policy | default("Delete"),
+            "clusterDef": item.cluster_def | default("postgresql"),
+            "topology": item.topology | default("replication"),
+            "componentSpecs": [
+              {
+                "name": "postgresql",
+                "serviceVersion": item.service_version,
+                "replicas": item.replicas | default(2),
+                "resources": {
+                  "requests": { "cpu": item.cpu | default("500m"), "memory": item.memory | default("512Mi") },
+                  "limits":   { "cpu": item.cpu | default("500m"), "memory": item.memory | default("512Mi") }
+                },
+                "volumeClaimTemplates": [
+                  {
+                    "name": "data",
+                    "spec": {
+                      "storageClassName": (item.storage_class if item.storage_class else omit),
+                      "accessModes": ["ReadWriteOnce"],
+                      "resources": { "requests": { "storage": item.storage_size | default("20Gi") } }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }}
+  loop: "{{ kubeblocks_config.clusters }}"
+  loop_control: { label: "{{ item.name }}" }

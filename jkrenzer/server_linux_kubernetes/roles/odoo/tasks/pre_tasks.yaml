@@ -1,0 +1,26 @@
+- name: Merge defaults into config
+  ansible.builtin.set_fact:
+    odoo_config: "{{ odoo_config_defaults | combine(odoo_config, recursive=True) }}"
+
+- name: Configure external database settings
+  ansible.builtin.set_fact:
+    odoo_config: >-
+      {{
+        odoo_config | combine({
+          'helm': odoo_config.helm | combine({
+            'values': (odoo_config.helm.values | default({})) | combine({
+              'externalDatabase': {
+                'host': odoo_config.external_db.host,
+                'port': odoo_config.external_db.port,
+                'user': odoo_config.external_db.user,
+                'password': odoo_config.external_db.password,
+                'database': odoo_config.external_db.database
+              },
+              'postgresql': {
+                'enabled': false
+              }
+            })
+          })
+        }, recursive=True)
+      }}
+  when: odoo_config.external_db is defined and odoo_config.external_db.enable

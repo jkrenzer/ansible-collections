@@ -1,0 +1,25 @@
+
+# Namespaced defaults for openldap
+
+odoo_config_defaults: &config
+  state: present
+  version: '2.6'
+  external_db: 
+    enable: false
+    host: localhost
+    port: 5432
+    user: odoo
+    password: odoo_password
+    database: odoo_db
+  helm:
+    chart:
+      ref: bitnami/odoo
+      version: '18'
+      release_name: odoo
+      release_namespace: odoo
+      create_namespace: true
+    repos:
+      - name: bitnami
+        url: oci://registry-1.docker.io/bitnamicharts
+    repo_key_dest: /usr/share/keyrings/helm_signing.asc
+odoo_config: *config

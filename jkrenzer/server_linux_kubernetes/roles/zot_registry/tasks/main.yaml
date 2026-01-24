@@ -1,0 +1,8 @@
+- name: Run pre tasks
+  ansible.builtin.import_tasks: pre_tasks.yaml
+- name: Install Zot Registry
+  ansible.builtin.import_tasks: install.yaml
+  when: zot_registry_config.state == "present"
+- name: Uninstall Zot Registry
+  ansible.builtin.import_tasks: uninstall.yaml
+  when: zot_registry_config.state == "absent"

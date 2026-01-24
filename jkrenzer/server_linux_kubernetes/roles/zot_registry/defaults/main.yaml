@@ -1,0 +1,12 @@
+---
+zot_registry_config_defaults: &config
+  chart_ref: project-zot/zot
+  chart_version: v2.1.7
+  helm_repos:
+    - name: project-zot
+      url: http://zotregistry.dev/helm-charts
+  name: "zot-registry"
+  namespace: zot-registry
+  state: present
+  version: v2.1.7
+zot_registry_config: *config

@@ -1,7 +1,7 @@
 ---
-- name: Install postgres deployment
+- name: Install mailserver deployment
   ansible.builtin.include_tasks: install.yaml
-  when: state == "present"
-- name: Remove postgres deployment
+  when: mailserver_config.state == "present"
+- name: Remove mailserver deployment
   ansible.builtin.include_tasks: remove.yaml
-  when: state == "absent"
+  when: mailserver_config.state == "absent"

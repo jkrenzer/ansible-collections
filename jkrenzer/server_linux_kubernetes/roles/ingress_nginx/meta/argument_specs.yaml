@@ -1,60 +1,62 @@
 ---
 argument_specs:
-  # tasks/main.yml entry point
   main:
-    short_description: Install ingress-nginx
-    description:
-      - Installs Ingress-Nginx in the cluster
-    author:
-      - Jörn Krenzer
+    short_description: Argument spec for ingress_nginx role
     options:
-      state:
-        type: str
-        choices:
-          - present
-          - absent
-        default: present
-        description: "Desired state of the role"
-      version:
-        type: str
-        default: v1.5.3
-        description: "Version of the app to install"
-      helm:
+      ingress_nginx_config_defaults:
+        description: Default configuration for ingress_nginx Helm chart
         type: dict
         options:
-          chart_ref:
+          state:
             type: str
-            default: ingress-nginx/ingress-nginx
-            description: "Reference name of the helm chart"
-          create_namespace:
-            type: bool
-            default: true
-            description: "Create the namespace if it does not exist"
-          release_name:
+            choices:
+              - present
+              - absent
+            default: present
+            description: Desired state of the role
+          version:
             type: str
-            default: ingress-nginx
-            description: "Name of the helm release"
-          release_namespace:
-            type: str
-            default: ingress-nginx
-            description: "Namespace of the helm release"
-          repo_name:
-            type: str
-            default: ingress-nginx
-            description: "Name of the helm repository"
-          repo_url:
-            type: str
-            default: https://kubernetes.github.io/ingress-nginx
-            description: "Helm repository to use"
-          repo_key_dest:
-            type: str
-            default: /usr/share/keyrings/helm_signing.asc
-            description: "Destination for the signing keys of helm"
-          values:
-            type: list
-            elements: dict
-            description: "Values to set in the helm chart"
-            default:
-              controller:
-                extraArgs:
-                  enable-ssl-passthrough: 1
+            default: v1.5.3
+            description: Version of the app to install
+          helm:
+            type: dict
+            options:
+              chart_ref:
+                type: str
+                default: ingress-nginx/ingress-nginx
+                description: Reference name of the helm chart
+              create_namespace:
+                type: bool
+                default: true
+                description: Create the namespace if it does not exist
+              release_name:
+                type: str
+                default: ingress-nginx
+                description: Name of the helm release
+              release_namespace:
+                type: str
+                default: ingress-nginx
+                description: Namespace of the helm release
+              repo_name:
+                type: str
+                default: ingress-nginx
+                description: Name of the helm repository
+              repo_url:
+                type: str
+                default: https://kubernetes.github.io/ingress-nginx
+                description: Helm repository to use
+              repo_key_dest:
+                type: str
+                default: /usr/share/keyrings/helm_signing.asc
+                description: Destination for the signing keys of helm
+              values:
+                type: dict
+                description: Values to set in the helm chart
+                default:
+                  controller:
+                    extraArgs:
+                      enable-ssl-passthrough: 1
+      ingress_nginx_config:
+        description: Configuration for ingress_nginx Helm chart (overrides defaults)
+        type: dict
+        default: "{{ ingress_nginx_config_defaults }}"

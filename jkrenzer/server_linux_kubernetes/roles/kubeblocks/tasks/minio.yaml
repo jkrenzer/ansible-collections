@@ -1,0 +1,85 @@
+# tasks/minio.yml
+- name: "MinIO | Add Bitnami repo"
+  kubernetes.core.helm_repository:
+    name: bitnami
+    repo_url: https://charts.bitnami.com/bitnami
+
+- name: "MinIO | Install/upgrade (standalone) in {{ kb_minio_namespace }}"
+  kubernetes.core.helm:
+    name: "{{ kb_minio_release }}"
+    chart_ref: "{{ kb_minio_chart_ref }}"
+    chart_version: "{{ kb_minio_chart_version | default(omit) }}"
+    release_namespace: "{{ kb_minio_namespace }}"
+    create_namespace: true
+    wait: true
+    values:
+      mode: "{{ kb_minio_mode }}"              # ensure standalone for defaultBuckets
+      auth:
+        rootUser: "{{ kb_minio_access_key }}"
+        rootPassword: "{{ kb_minio_secret_key }}"
+      defaultBuckets: "{{ kb_minio_bucket }}"  # created on first boot (standalone only)
+      persistence:
+        enabled: true
+        size: "{{ kb_minio_storage_size }}"
+        storageClass: "{{ kb_minio_storage_class | default(omit) }}"
+      service:
+        ports:
+          api: {{ kb_minio_service_port }}
+      console:
+        enabled: true
+        service:
+          ports:
+            http: {{ kb_minio_console_port }}
+
+- name: "MinIO | Compute repo namespaces"
+  ansible.builtin.set_fact:
+    _kb_repo_namespaces: >-
+      {{
+        (kb_minio_repo_namespaces | length > 0)
+        | ternary(kb_minio_repo_namespaces,
+                  (kb_clusters | map(attribute='namespace') | list | unique))
+      }}
+
+- name: "MinIO | Create S3 credential Secret for BackupRepo (in each ns)"
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ kb_minio_repo_secret_name }}"
+        namespace: "{{ item }}"
+      type: Opaque
+      stringData:
+        accessKeyId: "{{ kb_minio_access_key }}"
+        secretAccessKey: "{{ kb_minio_secret_key }}"
+  loop: "{{ _kb_repo_namespaces }}"
+
+- name: "MinIO | Create BackupRepo (S3-compatible) in each ns"
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: dataprotection.kubeblocks.io/v1alpha1
+      kind: BackupRepo
+      metadata:
+        name: "{{ kb_minio_repo_name }}"
+        namespace: "{{ item }}"
+        annotations: >-
+          {{
+            (kb_minio_repo_is_default | bool)
+            | ternary({'dataprotection.kubeblocks.io/is-default-repo': 'true'}, {})
+          }}
+      spec:
+        storageProviderRef: s3      # S3-compatible (MinIO)
+        accessMethod: Tool
+        pvReclaimPolicy: Retain
+        volumeCapacity: 50Gi
+        config:
+          bucket: "{{ kb_minio_bucket }}"
+          endpoint: "http://{{ kb_minio_release }}.{{ kb_minio_namespace }}.svc.cluster.local:{{ kb_minio_service_port }}"
+          region: "{{ kb_minio_region }}"
+          mountOptions: "--memory-limit 1000 --dir-mode 0777 --file-mode 0666"
+        credential:
+          name: "{{ kb_minio_repo_secret_name }}"
+          namespace: "{{ item }}"
+  loop: "{{ _kb_repo_namespaces }}"

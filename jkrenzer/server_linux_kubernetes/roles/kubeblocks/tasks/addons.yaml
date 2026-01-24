@@ -1,0 +1,11 @@
+
+- name: "KubeBlocks | Ensure addons (Helm)"
+  kubernetes.core.helm:
+    name: "kb-addon-{{ item.name }}"
+    chart_ref: "{{ item.chart_ref }}"
+    chart_version: "{{ item.version | default(omit) }}"
+    release_namespace: "{{ kubeblocks_config.namespace }}"
+    create_namespace: false
+    state: "{{ item.state | default('present') }}"
+    wait: true
+  loop: "{{ kubeblocks_config.addons }}"

@@ -1,0 +1,17 @@
+# Namespaced defaults for postgres
+
+postgres_config_defaults: &config
+  state: present
+  version: v13.3.0
+  helm:
+    chart:
+      ref: bitnami/postgresql
+      version: v13.3.0
+      release_name: postgresql
+      release_namespace: postgresql
+      create_namespace: true
+    repos:
+      - name: bitnami
+        url: https://charts.bitnami.com/bitnami
+    repo_key_dest: /usr/share/keyrings/helm_signing.asc
+postgres_config: *config

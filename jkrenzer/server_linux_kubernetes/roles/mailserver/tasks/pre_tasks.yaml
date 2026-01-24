@@ -1,0 +1,3 @@
+- name: Merge defaults into config
+  ansible.builtin.set_fact:
+    mailserver_config: "{{ mailserver_config_defaults | combine(mailserver_config, recursive=True) }}"

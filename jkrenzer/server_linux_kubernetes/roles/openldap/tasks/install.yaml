@@ -1,17 +1,17 @@
 ---
 - name: Add the repo
   kubernetes.core.helm_repository:
-    name: "{{ helm.repo_name }}"
-    repo_url: "{{ helm.repo_url }}"
+    name: "{{ openldap_config.helm.repo_name }}"
+    repo_url: "{{ openldap_config.helm.repo_url }}"
     repo_state: present
 
 - name: Deploy chart
   kubernetes.core.helm:
-    chart_ref: "{{ helm.chart_ref }}"
-    create_namespace: "{{ helm.create_namespace }}"
-    release_name: "{{ helm.release_name }}"
-    release_namespace: "{{ helm.release_namespace }}"
+    chart_ref: "{{ openldap_config.helm.chart_ref }}"
+    create_namespace: "{{ openldap_config.helm.create_namespace }}"
+    release_name: "{{ openldap_config.helm.release_name }}"
+    release_namespace: "{{ openldap_config.helm.release_namespace }}"
     release_state: present
     update_repo_cache: true
-    chart_version: "{{ version }}"
-    release_values: "{{ helm.values }}"
+    chart_version: "{{ openldap_config.version }}"
+    release_values: "{{ openldap_config.helm.values | default(omit) }}"

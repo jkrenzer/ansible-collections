@@ -1,0 +1,33 @@
+
+- name: "KubeBlocks | Remove addons"
+  kubernetes.core.helm:
+    name: "kb-addon-{{ item.name }}"
+    release_namespace: "{{ kubeblocks_config.namespace }}"
+    state: absent
+    wait: true
+  loop: "{{ kubeblocks_config.addons | selectattr('state','defined') | selectattr('state','equalto','present') | list }}"
+  ignore_errors: true
+
+
+- name: "KubeBlocks | Uninstall operator"
+  kubernetes.core.helm:
+    name: "kubeblocks"
+    release_namespace: "{{ kubeblocks_config.namespace }}"
+    state: absent
+    wait: true
+  ignore_errors: true
+
+
+- name: "KubeBlocks | Delete CRDs (DANGEROUS: wipes API objects)"
+  when: kubeblocks_config.uninstall.delete_crds
+  kubernetes.core.k8s:
+    state: absent
+    src: "https://github.com/apecloud/kubeblocks/releases/download/{{ kubeblocks_config.version }}/kubeblocks_crds.yaml"
+
+
+- name: "KubeBlocks | Delete namespace"
+  when: kubeblocks_config.uninstall.delete_namespace
+  kubernetes.core.k8s:
+    state: absent
+    kind: Namespace
+    name: "{{ kubeblocks_config.namespace }}"

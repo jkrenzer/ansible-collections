@@ -1,17 +1,17 @@
 ---
 - name: Add the repo
   kubernetes.core.helm_repository:
-    name: "{{ helm.repo_name }}"
-    repo_url: "{{ helm.repo_url }}"
+    name: "{{ mailserver_config.helm.repo_name }}"
+    repo_url: "{{ mailserver_config.helm.repo_url }}"
     repo_state: present
 
 - name: Deploy chart
   kubernetes.core.helm:
-    chart_ref: "{{ helm.chart_ref }}"
-    create_namespace: "{{ helm.create_namespace }}"
-    release_name: "{{ helm.release_name }}"
-    release_namespace: "{{ helm.release_namespace }}"
+    chart_ref: "{{ mailserver_config.helm.chart_ref }}"
+    create_namespace: "{{ mailserver_config.helm.create_namespace }}"
+    release_name: "{{ mailserver_config.helm.release_name }}"
+    release_namespace: "{{ mailserver_config.helm.release_namespace }}"
     release_state: present
     update_repo_cache: true
-    chart_version: "{{ version }}"
-    release_values: "{{ helm.values }}"
+    chart_version: "{{ mailserver_config.version }}"
+    release_values: "{{ mailserver_config.helm.values | default(omit) }}"

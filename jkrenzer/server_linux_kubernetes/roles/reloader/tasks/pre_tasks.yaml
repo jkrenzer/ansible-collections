@@ -1,0 +1,3 @@
+- name: Merge defaults into config
+  ansible.builtin.set_fact:
+    reloader_config: "{{ reloader_config_defaults | combine(reloader_config, recursive=True) }}"

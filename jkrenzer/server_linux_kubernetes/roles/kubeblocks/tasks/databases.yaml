@@ -1,0 +1,79 @@
+- name: "KubeBlocks | Create DB init ConfigMaps"
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: "initdb-{{ cluster.name }}-{{ db.name }}"
+        namespace: "{{ cluster.namespace }}"
+      data:
+        init.sql: |
+          -- idempotent role creation
+          DO $$
+          BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_roles WHERE rolname = '{{ db.user }}') THEN
+              EXECUTE format('CREATE ROLE %I LOGIN PASSWORD %L', '{{ db.user }}', '{{ db.password }}');
+            END IF;
+          END$$;
+
+          -- idempotent database creation
+          DO $$
+          BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = '{{ db.name }}') THEN
+              EXECUTE format('CREATE DATABASE %I OWNER %I', '{{ db.name }}', '{{ db.user }}');
+            END IF;
+          END$$;
+  loop: "{{ kubeblocks_config.clusters | selectattr('databases','defined') | list | subelements('databases') }}"
+  loop_control:
+    label: "{{ item.0.name }} / {{ item.1.name }}"
+  vars:
+    cluster: "{{ item.0 }}"
+    db: "{{ item.1 }}"
+
+- name: "KubeBlocks | One-shot Jobs to apply SQL (safe to re-run)"
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: batch/v1
+      kind: Job
+      metadata:
+        name: "initdb-{{ cluster.name }}-{{ db.name }}"
+        namespace: "{{ cluster.namespace }}"
+      spec:
+        ttlSecondsAfterFinished: 300
+        template:
+          spec:
+            restartPolicy: OnFailure
+            containers:
+              - name: psql
+                image: "postgres:16-alpine"
+                env:
+                  - name: PGUSER
+                    valueFrom:
+                      secretKeyRef:
+                        name: "{{ cluster.admin_secret_name | default(kb_clusters_default_admin_secret(cluster.name)) }}"
+                        key: username
+                  - name: PGPASSWORD
+                    valueFrom:
+                      secretKeyRef:
+                        name: "{{ cluster.admin_secret_name | default(kb_clusters_default_admin_secret(cluster.name)) }}"
+                        key: password
+                command: ["sh","-c"]
+                args:
+                  - >
+                    psql -h {{ cluster.service_hostname | default(kb_clusters_default_service(cluster.name, cluster.namespace)) }}
+                    -d postgres -f /sql/init.sql
+                volumeMounts:
+                  - name: sql
+                    mountPath: /sql
+            volumes:
+              - name: sql
+                configMap:
+                  name: "initdb-{{ cluster.name }}-{{ db.name }}"
+  loop: "{{ kb_clusters | selectattr('databases','defined') | list | subelements('databases') }}"
+  loop_control:
+    label: "{{ item.0.name }} / {{ item.1.name }}"
+  vars:
+    cluster: "{{ item.0 }}"
+    db: "{{ item.1 }}"

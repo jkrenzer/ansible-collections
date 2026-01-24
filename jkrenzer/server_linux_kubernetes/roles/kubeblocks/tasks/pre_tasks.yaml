@@ -1,0 +1,4 @@
+
+- name: Merge kubeblocks_config_defaults into kubeblocks_config
+  ansible.builtin.set_fact:
+    kubeblocks_config: "{{ kubeblocks_config_defaults | ansible.builtin.combine(kubeblocks_config, recursive=True) }}"

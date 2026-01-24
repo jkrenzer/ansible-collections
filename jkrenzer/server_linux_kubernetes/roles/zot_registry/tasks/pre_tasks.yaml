@@ -1,0 +1,4 @@
+---
+- name: Merge defaults into config
+  ansible.builtin.set_fact:
+    zot_registry_config: "{{ zot_registry_config_defaults | ansible.builtin.combine(zot_registry_config, recursive=True) }}"

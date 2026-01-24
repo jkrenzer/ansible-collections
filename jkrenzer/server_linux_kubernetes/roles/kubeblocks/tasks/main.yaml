@@ -1,0 +1,27 @@
+
+- name: Run pre tasks
+  ansible.builtin.import_tasks: pre_tasks.yaml
+
+- name: "KubeBlocks | Install / Uninstall switch"
+  ansible.builtin.include_tasks: "{{ 'install.yml' if kubeblocks_config.state == 'present' else 'uninstall.yml' }}"
+  tags: "{{ kubeblocks_config.tags.install if kubeblocks_config.state == 'present' else kubeblocks_config.tags.uninstall }}"
+
+- name: "KubeBlocks | Addons (enable/disable)"
+  ansible.builtin.include_tasks: "addons.yml"
+  when: kubeblocks_config.state == 'present'
+  tags: "{{ kubeblocks_config.tags.addons }}"
+
+- name: "KubeBlocks | Manage clusters"
+  ansible.builtin.include_tasks: "cluster.yml"
+  when: kubeblocks_config.state == 'present' and (kubeblocks_config.clusters | length) > 0
+  tags: "{{ kubeblocks_config.tags.cluster }}"
+
+- name: "KubeBlocks | Create logical databases/users"
+  ansible.builtin.include_tasks: "databases.yml"
+  when: kubeblocks_config.state == 'present' and kubeblocks_config.manage_databases and (kubeblocks_config.clusters | selectattr('databases','defined') | list | length > 0)
+  tags: "{{ kubeblocks_config.tags.databases }}"
+
+- name: "KubeBlocks | Extra manifests (BackupRepo/Schedule/etc.)"
+  ansible.builtin.include_tasks: "extras.yml"
+  when: kubeblocks_config.state == 'present' and (kubeblocks_config.extra_manifests | length) > 0
+  tags: "{{ kubeblocks_config.tags.extras }}"

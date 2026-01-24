@@ -1,9 +1,9 @@
 ---
-- name: Install ingress-nginx and basic functionality
+- name: Manage KubeBlocks Database Operator
   hosts: k3s_cluster:&server
   environment:
     K8S_AUTH_API_KEY: "{{ token | quote }}"
     K8S_AUTH_KUBECONFIG: /home/{{ ansible_user }}/.kube/config
   become: true
   roles:
-    - jkrenzer.server_linux_kubernetes.ingress_nginx
+    - jkrenzer.server_linux_kubernetes.kubeblocks

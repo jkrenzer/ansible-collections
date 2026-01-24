@@ -1,0 +1,12 @@
+# Apply arbitrary extra k8s resources (BackupRepo, BackupSchedule, OpsRequests, etc.)
+
+- name: "KubeBlocks | Apply extra manifests"
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ item }}"
+  loop: >-
+    {{
+      kubeblocks_config.extra_manifests
+      | map('type_debug')            # normalize strings/dicts
+      | list
+    }}

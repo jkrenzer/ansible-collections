@@ -1,7 +1,7 @@
 ---
 - name: Install cert-manager deployment
   ansible.builtin.include_tasks: install.yaml
-  when: state == "present"
+  when: certmanager_config.state == "present"
 - name: Remove cert-manager deployment
   ansible.builtin.include_tasks: remove.yaml
-  when: state == "absent"
+  when: certmanager_config.state == "absent"

@@ -1,0 +1,17 @@
+---
+- name: Add the repo
+  kubernetes.core.helm_repository:
+    name: "{{ odoo_config.helm.repo_name }}"
+    repo_url: "{{ odoo_config.helm.repo_url }}"
+    repo_state: present
+
+- name: Deploy chart
+  kubernetes.core.helm:
+    chart_ref: "{{ odoo_config.helm.chart_ref }}"
+    create_namespace: "{{ odoo_config.helm.create_namespace }}"
+    release_name: "{{ odoo_config.helm.release_name }}"
+    release_namespace: "{{ odoo_config.helm.release_namespace }}"
+    release_state: present
+    update_repo_cache: true
+    chart_version: "{{ odoo_config.version }}"
+    release_values: "{{ odoo_config.helm.values | default(omit) }}"

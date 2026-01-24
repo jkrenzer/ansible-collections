@@ -1,0 +1,17 @@
+# Namespaced defaults for reloader
+
+reloader_config_defaults: &config
+  state: present
+  version: v0.0.99
+  helm:
+    chart:
+      ref: stakater/reloader
+      version: v0.0.99
+      release_name: reloader
+      release_namespace: reloader
+      create_namespace: true
+    repos:
+      - name: stakater
+        url: https://stakater.github.io/stakater-charts
+    repo_key_dest: /usr/share/keyrings/helm_signing.asc
+reloader_config: *config

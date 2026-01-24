@@ -1,14 +1,14 @@
 ---
 - name: Add jetstack helm repo for cert-manager
   kubernetes.core.helm_repository:
-    name: "{{ helm.repo_name }}"
-    repo_url: "{{ helm.repo_url }}"
+    name: "{{ certmanager_config.helm.repo_name }}"
+    repo_url: "{{ certmanager_config.helm.repo_url }}"
     repo_state: present
 - name: Install cert-manager deployment
   kubernetes.core.helm:
-    chart_ref: "{{ helm.chart_ref }}"
+    chart_ref: "{{ certmanager_config.helm.chart_ref }}"
     create_namespace: true
-    release_name: "{{ helm.release_name }}"
-    release_namespace: "{{ helm.release_namespace }}"
+    release_name: "{{ certmanager_config.helm.release_name }}"
+    release_namespace: "{{ certmanager_config.helm.release_namespace }}"
     release_state: present
-    release_values: "{{ helm.values }}"
+    release_values: "{{ certmanager_config.helm.values | default(omit) }}"

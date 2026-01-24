@@ -1,0 +1,50 @@
+---
+argument_specs:
+  main:
+    short_description: Argument spec for zot_registry role
+    options:
+      zot_registry_config_defaults:
+        description: Default configuration for zot_registry Helm chart
+        type: dict
+      zot_registry_config:
+        description: Configuration for zot_registry Helm chart (overrides defaults)
+        type: dict
+        options:
+          chart_ref:
+            type: str
+            description: Helm chart reference
+            default: project-zot/zot
+          chart_version:
+            type: str
+            description: Helm chart version
+            default: v2.1.7
+          helm_repos:
+            type: list
+            elements: dict
+            description: List of Helm repositories
+            default:
+              - name: project-zot
+                url: http://zotregistry.dev/helm-charts
+            options:
+              name:
+                type: str
+                description: Repository name
+              url:
+                type: str
+                description: Repository URL
+          name:
+            type: str
+            description: Release name
+            default: zot-registry
+          namespace:
+            type: str
+            description: Kubernetes namespace
+            default: zot-registry
+          state:
+            type: str
+            description: Desired state
+            default: present
+          version:
+            type: str
+            description: Application version
+            default: v2.1.7

@@ -1,0 +1,15 @@
+---
+- name: Manage the k3s cluster
+  ansible.builtin.import_playbook: k3s.orchestration.site
+- name: Manage helm
+  ansible.builtin.import_playbook: manage_helm.yaml
+- name: Manage certmanager
+  ansible.builtin.import_playbook: manage_certmanager.yaml
+- name: Manage Stakater reloader
+  ansible.builtin.import_playbook: manage_reloader.yaml
+- name: Manage Ingress NGINX
+  ansible.builtin.import_playbook: manage_ingress_nginx.yaml
+- name: Manage mailserver
+  ansible.builtin.import_playbook: manage_mailserver.yaml
+- name: Manage Zot Registry
+  ansible.builtin.import_playbook: manage_zot_registry.yaml

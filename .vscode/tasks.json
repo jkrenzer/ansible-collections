@@ -6,17 +6,17 @@
         {
             "label": "Lint and fix",
             "type": "shell",
-            "command": "ansible-lint --fix -f full --project-dir ${WORK_DIR}/jkrenzer"
+            "command": "ansible-lint --fix -f full --project-dir ${WORK_DIR}"
         },
         {
             "label": "Lint",
             "type": "shell",
-            "command": "ansible-lint -f full --project-dir ${WORK_DIR}/jkrenzer"
+            "command": "ansible-lint -f full --project-dir ${WORK_DIR}"
         },
         {
             "label": "Install all collections",
             "type": "shell",
-            "command": "ansible-galaxy collection install ${WORK_DIR}/jkrenzer/*"
+            "command": "ansible-galaxy collection install ${WORK_DIR}/*"
         },
         {
             "label": "Run pre-commit on changed files",

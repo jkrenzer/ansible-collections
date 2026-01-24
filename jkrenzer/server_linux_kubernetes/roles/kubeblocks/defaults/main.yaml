@@ -1,0 +1,100 @@
+
+# All defaults are namespaced under kubeblocks_config_defaults
+kubeblocks_config_defaults: &config
+  # --- Core operator install/uninstall ---
+  namespace: "kb-system"
+  state: "present"             # present | absent
+  install_crds: true
+  version: "v1.0.0"           # release tag; CRDs URL uses this exact tag
+  chart_version: "{{ kubeblocks_config.version | regex_replace('^v','') }}"  # Helm chart semver
+
+  uninstall:
+    delete_crds: false
+    delete_namespace: false
+
+  # --- Helm repos (override only if you mirror them) ---
+  helm:
+    repos:
+    - { name: "kubeblocks",        url: "https://apecloud.github.io/helm-charts" }
+    - { name: "kubeblocks-addons", url: "https://apecloud.github.io/helm-charts" }
+
+  # --- Addons you want enabled via Helm (state: present/absent) ---
+  addons:
+    - name: "postgresql"
+      chart_ref: "kubeblocks-addons/postgresql"
+      version: "1.0.0"
+      state: "present"
+
+  # --- PostgreSQL clusters to manage (create/update) ---
+  clusters: []
+  # Example:
+  # clusters:
+  #   - name: "pg-main"
+  #     namespace: "data"
+  #     cluster_def: "postgresql"
+  #     service_version: "14.7.2"       # KubeBlocks ServiceVersion for Postgres
+  #     replicas: 2
+  #     cpu: "500m"
+  #     memory: "512Mi"
+  #     storage_size: "20Gi"
+  #     storage_class: null             # null → default SC
+  #     termination_policy: "Delete"    # "Delete" or "WipeOut" (careful)
+  #     topology: "replication"
+  #     # Optional: DBs to create inside this cluster
+  #     databases:
+  #       - name: "app1"
+  #         user: "app1"
+  #         password: "change-me-app1"
+  #       - name: "app2"
+  #         user: "app2"
+  #         password: "change-me-app2"
+  #     # Optional: admin secret & service overrides (rarely needed)
+  #     admin_secret_name: "{{ kubeblocks_clusters_default_admin_secret(name) }}"
+  #     service_hostname:  "{{ kubeblocks_clusters_default_service(name, namespace) }}"
+
+  # Whether to apply databases/jobs from clusters[*].databases
+  manage_databases: true
+
+  # Extra arbitrary manifests to apply (BackupRepo, BackupSchedule, etc.)
+  # Accepts inline dicts (k8s resources) or file paths.
+  extra_manifests: []   # e.g. - "{{ lookup('file', 'files/backup-repo.yaml') | from_yaml }}"
+
+  # Snapshot controller (only if you need CSI snapshots)
+  install_snapshot_controller: false
+  snapshot_controller_chart_ref: "piraeus-charts/snapshot-controller"
+  snapshot_controller_release: "snapshot-controller"
+  snapshot_controller_namespace: "{{ kubeblocks_config.namespace }}"
+  snapshot_controller_chart_version: null  # pick a version if you need a specific one
+
+  # --- MinIO (optional local object storage for backups) ---
+  minio:
+    install: false
+    release: "kubeblocks-minio"
+    chart_ref: "bitnami/minio"     # bitnami chart
+    chart_version: null            # e.g. "14.10.5" to pin
+    namespace: "{{ kubeblocks_config.namespace }}"  # install alongside KubeBlocks
+    access_key: "minioadmin"       # MINIO_ROOT_USER
+    secret_key: "minioadmin"       # MINIO_ROOT_PASSWORD
+    bucket: "kb-backups"
+    region: "us-east-1"            # S3 region string (MinIO accepts any)
+    mode: "standalone"             # important: defaultBuckets only in standalone mode
+    storage_size: "20Gi"
+    storage_class: null            # null → cluster default
+    service_port: 9000
+    console_port: 9001
+    repo_namespaces: []
+    repo_secret_name: "kb-minio-s3-creds"
+    repo_name: "repo-minio"
+    repo_is_default: true
+
+  # Common tags (for selective runs)
+  tags:
+    install: [ "kb", "kubeblocks", "install" ]
+    uninstall: [ "kb", "kubeblocks", "uninstall" ]
+    addons: [ "kb", "kubeblocks", "addons" ]
+    cluster: [ "kb", "kubeblocks", "cluster" ]
+    databases: [ "kb", "kubeblocks", "databases" ]
+    extras: [ "kb", "kubeblocks", "extras" ]
+
+# User config, by default a copy of the defaults
+kubeblocks_config: *config

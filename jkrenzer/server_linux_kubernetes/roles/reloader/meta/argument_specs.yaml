@@ -1,59 +1,55 @@
 ---
 argument_specs:
-  # tasks/main.yml entry point
   main:
-    short_description: Install Reloader
-    description:
-      - Installs Stakater Reloader in the cluster
-    author:
-      - Jörn Krenzer
+    short_description: Argument spec for reloader role
     options:
-      state:
-        type: str
-        choices:
-          - present
-          - absent
-        default: present
-        description: "Desired state of the role"
-      version:
-        type: str
-        default: v0.0.99
-        description: "Version of the app to install"
-      helm:
+      reloader_config_defaults:
+        description: Default configuration for reloader Helm chart
         type: dict
         options:
-          chart_ref:
+          state:
             type: str
-            default: stakater/reloader
-            description: "Reference name of the helm chart"
-          create_namespace:
-            type: bool
-            default: true
-            description: "Create the namespace if it does not exist"
-          release_name:
+            choices:
+              - present
+              - absent
+            default: present
+            description: Desired state of the role
+          version:
             type: str
-            default: reloader
-            description: "Name of the helm release"
-          release_namespace:
-            type: str
-            default: reloader
-            description: "Namespace of the helm release"
-          repo_name:
-            type: str
-            default: stakater
-            description: "Name of the helm repository"
-          repo_url:
-            type: str
-            default: https://stakater.github.io/stakater-charts
-            description: "Helm repository to use"
-          repo_key_dest:
-            type: str
-            default: /usr/share/keyrings/helm_signing.asc
-            description: "Destination for the signing keys of helm"
-          values:
-            type: list
-            elements: dict
-            description: "Values to set in the helm chart"
-            default:
-              reloader:
-                watchGlobally: true
+            default: v0.0.99
+            description: Version of the app to install
+          helm:
+            type: dict
+            options:
+              chart_ref:
+                type: str
+                default: stakater/reloader
+                description: Reference name of the helm chart
+              create_namespace:
+                type: bool
+                default: true
+                description: Create the namespace if it does not exist
+              release_name:
+                type: str
+                default: reloader
+                description: Name of the helm release
+              release_namespace:
+                type: str
+                default: reloader
+                description: Namespace of the helm release
+              repo_name:
+                type: str
+                default: stakater
+                description: Name of the helm repository
+              repo_url:
+                type: str
+                default: https://stakater.github.io/stakater-charts
+                description: Helm repository to use
+              repo_key_dest:
+                type: str
+                default: /usr/share/keyrings/helm_signing.asc
+                description: Destination for the signing keys of helm
+      reloader_config:
+        description: Configuration for reloader Helm chart (overrides defaults)
+        type: dict
+        default: "{{ reloader_config_defaults }}"

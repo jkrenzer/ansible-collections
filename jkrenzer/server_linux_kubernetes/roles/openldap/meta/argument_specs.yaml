@@ -1,55 +1,55 @@
 ---
 argument_specs:
-  # tasks/main.yml entry point
   main:
-    short_description: Install OpenLDAP
-    description:
-      - Installs a OpenLDAP instance using helm
-    author:
-      - Jörn Krenzer
+    short_description: Argument spec for openldap role
     options:
-      state:
-        type: str
-        choices:
-          - present
-          - absent
-        default: present
-        description: "Desired state of the role"
-      version:
-        type: str
-        default: "2.6"
-        description: "Version of the app to install"
-      helm:
+      openldap_config_defaults:
+        description: Default configuration for openldap Helm chart
         type: dict
         options:
-          chart_ref:
+          state:
             type: str
-            default: jkrenzer/openldap
-            description: "Reference name of the helm chart"
-          create_namespace:
-            type: bool
-            default: true
-            description: "Create the namespace if it does not exist"
-          release_name:
+            choices:
+              - present
+              - absent
+            default: present
+            description: Desired state of the role
+          version:
             type: str
-            default: openldap
-            description: "Name of the helm release"
-          release_namespace:
-            type: str
-            default: openldap
-            description: "Namespace of the helm release"
-          repo_name:
-            type: str
-            default: jkrenzer
-            description: "Name of the helm repository"
-          repo_url:
-            type: str
-            default: https://github.com/jkrenzer/helm-charts
-            description: "Helm repository to use"
-          repo_key_dest:
-            type: str
-            default: /usr/share/keyrings/helm_signing.asc
-            description: "Destination for the signing keys of helm"
-          values:
+            default: '2.6'
+            description: Version of the app to install
+          helm:
             type: dict
-            description: "Values to set in the helm chart"
+            options:
+              chart_ref:
+                type: str
+                default: jkrenzer/openldap
+                description: Reference name of the helm chart
+              create_namespace:
+                type: bool
+                default: true
+                description: Create the namespace if it does not exist
+              release_name:
+                type: str
+                default: openldap
+                description: Name of the helm release
+              release_namespace:
+                type: str
+                default: openldap
+                description: Namespace of the helm release
+              repo_name:
+                type: str
+                default: jkrenzer
+                description: Name of the helm repository
+              repo_url:
+                type: str
+                default: https://github.com/jkrenzer/helm-charts
+                description: Helm repository to use
+              repo_key_dest:
+                type: str
+                default: /usr/share/keyrings/helm_signing.asc
+                description: Destination for the signing keys of helm
+      openldap_config:
+        description: Configuration for openldap Helm chart (overrides defaults)
+        type: dict
+        default: "{{ openldap_config_defaults }}"
